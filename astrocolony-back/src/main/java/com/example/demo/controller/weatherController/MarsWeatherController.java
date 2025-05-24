@@ -3,12 +3,14 @@ package com.example.demo.controller.weatherController;
 import com.example.demo.model.WeatherResponse;
 import com.example.demo.service.weather.MarsWeatherService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/weather")
 public class MarsWeatherController {
 
     private final MarsWeatherService service;

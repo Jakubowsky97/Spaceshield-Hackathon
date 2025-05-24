@@ -1,0 +1,18 @@
+GET http://localhost:8080/api/power/SolarOutput?meters=62.690533
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.1.1.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+<> 2025-05-24T231222.200.json
+
+###
+
+GET http://localhost:8080/api/power/SolarEfficiency?meters=95.00104
+User-Agent: IntelliJ HTTP Client/IntelliJ IDEA 2025.1.1.1
+Accept-Encoding: br, deflate, gzip, x-gzip
+Accept: */*
+
+<> 2025-05-24T231115.404.json
+
+###
+

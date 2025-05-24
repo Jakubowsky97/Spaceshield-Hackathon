@@ -19,23 +19,11 @@ type FarmStats = {
   energyConsumption: number;
 };
 
-const exampleStats: Record<string, FarmStats> = {
-  "Sunny Farm": {
-    cropsYield: 15,
-    waterUsage: 12000,
-    energyConsumption: 500,
-  },
-  "Green Valley": {
-    cropsYield: 10,
-    waterUsage: 8000,
-    energyConsumption: 300,
-  },
-  "Farm #1": {
-    cropsYield: 8,
-    waterUsage: 9000,
-    energyConsumption: 400,
-  },
-};
+const fetchEnergyConsumption = async (tiles: Tile[]): Promise<number> => {
+  fetch("http://localhost:8008/api/energy")
+
+  return 10;
+}
 
 export default function Farms() {
   const [farms, setFarms] = useState<Farm[]>([]);
@@ -57,7 +45,7 @@ export default function Farms() {
 
           {farms.map((farm, idx) => {
             const farmName = farm.name ?? `Farm #${idx + 1}`;
-            const stats = exampleStats[farmName] ?? {
+            const stats = {
               cropsYield: 5,
               waterUsage: 7000,
               energyConsumption: 250,
@@ -73,7 +61,7 @@ export default function Farms() {
                 </CardHeader>
                 <CardContent>
                   <p>
-                    Tiles: <strong>{farm.tiles.length}</strong>
+                    Space taken: <strong>{farm.tiles.length * 10} m²</strong>
                   </p>
 
                   <div className="mt-4 space-y-2 text-sm text-gray-700 dark:text-gray-300">
