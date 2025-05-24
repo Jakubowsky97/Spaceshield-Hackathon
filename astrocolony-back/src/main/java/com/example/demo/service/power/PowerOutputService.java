@@ -18,7 +18,7 @@ public class PowerOutputService {
     public Mono<Double> calculateSolarPanelOutput(double solarPanelsInMeters) {
         return weatherApiClient.getLatestWeather().map(weather -> {
             double topSpeed = weather.getMaxWindSpeed();
-            double minSpeed = weather.getMinWindSpeed();
+            double minSpeed = weather.getAvgWindSpeed();
             if ((topSpeed - minSpeed) > 15) {
                 return standardSunRadiation * solarPanelsInMeters * 0.2 ;
             } else {
