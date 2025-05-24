@@ -13,9 +13,6 @@ public class MarsWeatherData {
     @JsonProperty("sol_keys")
     private List<String> solKeys;
 
-    @JsonProperty("validity_checks")
-    private Map<String, Object> validityChecks; // pomijamy walidację
-
     private Map<String, SolData> sols = new HashMap<>();
 
     @JsonAnySetter
@@ -39,14 +36,17 @@ public class MarsWeatherData {
         @JsonProperty("Last_UTC")
         public String lastUTC;
 
+        @JsonProperty("Season")
         public String Season;
     }
 
     @Data
     public static class SensorData {
+        @JsonProperty("av")
         public Double av;
-        public Double ct;
+        @JsonProperty("mn")
         public Double mn;
+        @JsonProperty("mx")
         public Double mx;
     }
 
@@ -63,22 +63,12 @@ public class MarsWeatherData {
                 directions.put(key, value);
             }
         }
+
     }
 
     @Data
     public static class WindDirection {
-        @JsonProperty("compass_degrees")
-        public Double compassDegrees;
-
         @JsonProperty("compass_point")
         public String compassPoint;
-
-        @JsonProperty("compass_right")
-        public Double compassRight;
-
-        @JsonProperty("compass_up")
-        public Double compassUp;
-
-        public Integer ct;
     }
 }

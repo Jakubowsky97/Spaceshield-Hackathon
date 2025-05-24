@@ -23,11 +23,19 @@ public class WeatherApiClient {
                     String latestSol = json.get("sol_keys").get(0).asText();
                     JsonNode solData = json.get(latestSol);
                     String date = solData.get("First_UTC").asText();
-                    double temp = solData.get("AT").get("av").asDouble();
-                    double pres = solData.get("PRE").get("av").asDouble();
-                    double wind = solData.get("HWS").get("av").asDouble();
+                    double tempavg = solData.get("AT").get("av").asDouble();
+                    double tempmin = solData.get("AT").get("mn").asDouble();
+                    double tempmax = solData.get("AT").get("mx").asDouble();
+                    double presavg = solData.get("PRE").get("av").asDouble();
+                    double presmin = solData.get("PRE").get("mn").asDouble();
+                    double presmax = solData.get("PRE").get("mx").asDouble();
+                    double windspeedavg = solData.get("HWS").get("av").asDouble();
+                    double windspeedmin = solData.get("HWS").get("mn").asDouble();
+                    double windspeedmax = solData.get("HWS").get("mx").asDouble();
+                    double winddir = solData.get("WD").get("most_common").get("compass_point").asDouble();
 
-                    return new WeatherResponse(latestSol, date, temp, pres, wind);
+                    return new WeatherResponse(latestSol, date, tempavg, tempmin, tempmax,
+                            presavg, presmin, presmax,windspeedavg,windspeedmin,windspeedmax,winddir);
                 });
     }
 }
