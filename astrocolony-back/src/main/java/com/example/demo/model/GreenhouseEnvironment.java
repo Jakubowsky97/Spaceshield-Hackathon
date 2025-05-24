@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
-@Scope("singleton")
 public class GreenhouseEnvironment {
     private double temperature = 20.0;
     private double co2Level = 400.0;
