@@ -2,25 +2,33 @@ package com.example.demo.service.power;
 
 import com.example.demo.client.WeatherApiClient;
 import com.example.demo.model.WeatherResponse;
-import com.example.demo.service.weather.MarsWeatherService;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
-
+@Service
 public class PowerOutputService {
-    double standardSunRadiation = 590;
-    WeatherApiClient weatherApiClient = new WeatherApiClient(WebClient.builder());
-    double topSpeed = new WeatherResponse(weatherApiClient.getLatestWeather()).getMaxWindSpeed();
-    double minSpeed =  new WeatherResponse(weatherApiClient.getLatestWeather()).getMinWindSpeed();
 
-    public double calculateSolarPanelOutput(double solarPanelsInMeters){
-        double efficiency;
-        if ((topSpeed - minSpeed) > 15){
-             efficiency = standardSunRadiation * 0.2 * 1 * solarPanelsInMeters;
-        }
-        else {
-            efficiency = standardSunRadiation * 0.8 * 0.95 * standardSunRadiation;
-        }
-        return efficiency;
+    private final WeatherApiClient weatherApiClient;
+    private final double standardSunRadiation = 590.0;
+
+    public PowerOutputService(WeatherApiClient weatherApiClient) {
+        this.weatherApiClient = weatherApiClient;
     }
 
+    public Mono<Double> calculateSolarPanelOutput(double solarPanelsInMeters) {
+        return weatherApiClient.getLatestWeather().map(weather -> {
+            double topSpeed = weather.getMaxWindSpeed();
+            double minSpeed = weather.getMinWindSpeed();
+            if ((topSpeed - minSpeed) > 15) {
+                return standardSunRadiation * solarPanelsInMeters * 0.2 ;
+            } else {
+                return standardSunRadiation * standardSunRadiation * 0.8 * 0.90;
+            }
+        });
+    }
+
+    public Mono<Double> calculateSolarPanelEfficiency(double solarPanelsInMeters) {
+        return calculateSolarPanelOutput(solarPanelsInMeters)
+                .map(output -> output / (standardSunRadiation * solarPanelsInMeters));
+    }
 }

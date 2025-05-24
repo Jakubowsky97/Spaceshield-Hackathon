@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.controller.weatherController;
 
 import com.example.demo.model.WeatherResponse;
 import com.example.demo.service.weather.MarsWeatherService;
@@ -9,7 +9,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 @RestController
-
 public class MarsWeatherController {
 
     private final MarsWeatherService service;
