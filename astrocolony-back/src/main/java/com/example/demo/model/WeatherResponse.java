@@ -1,5 +1,7 @@
-package com.example.demo.client;
+package com.example.demo.model;
 
+
+import reactor.core.publisher.Mono;
 
 public class WeatherResponse {
     private String sol;
@@ -29,6 +31,9 @@ public class WeatherResponse {
         this.minWindSpeed = minWindSpeed;
         this.maxWindSpeed = maxWindSpeed;
         this.windDirection = windDirection;
+    }
+
+    public WeatherResponse(Mono<WeatherResponse> latestWeather) {
     }
 
     public String getSol() {
