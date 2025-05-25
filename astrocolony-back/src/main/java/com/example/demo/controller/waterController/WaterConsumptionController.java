@@ -16,10 +16,6 @@ public class WaterConsumptionController {
 
     WaterConsumptionService waterConsumptionService;
 
-    public WaterConsumptionController(WaterConsumptionService waterConsumptionService) {
-        this.waterConsumptionService = waterConsumptionService;
-    }
-
     @RequestMapping("/consumption")
     public double calcWaterConsumption(@RequestParam int m2){
         return  waterConsumptionService.calculateDailyWaterUsage(m2);
