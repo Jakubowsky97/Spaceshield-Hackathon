@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/water")
 public class WaterConsumptionController {
+    public WaterConsumptionController(WaterConsumptionService waterConsumptionService) {
+        this.waterConsumptionService = waterConsumptionService;
+    }
 
 
     WaterConsumptionService waterConsumptionService;

@@ -11,6 +11,7 @@ type Farm = {
   tiles: Tile[];
   type: string;
   name?: string;
+  farmStats?: FarmStats;
 };
 
 type FarmStats = {
@@ -20,20 +21,54 @@ type FarmStats = {
 };
 
 const fetchEnergyConsumption = async (tiles: Tile[]): Promise<number> => {
-  fetch("http://localhost:8008/api/energy")
+  const response = fetch("http://localhost:8080/api/power/calcPowerConsumption?m2=" + tiles.length * 10)
+  const data = await response.then(res => res.json());
+  return data;
+}
 
-  return 10;
+const fetchWaterUsage = async (tiles: Tile[]): Promise<number> => {
+  const response = fetch("http://localhost:8080/api/water/consumption?m2=" + tiles.length * 10)
+  const data = await response.then(res => res.json());
+  return data;
 }
 
 export default function Farms() {
   const [farms, setFarms] = useState<Farm[]>([]);
+const [hasLoadedInitialFarms, setHasLoadedInitialFarms] = useState(false);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("farmClusters");
-    if (saved) {
-      setFarms(JSON.parse(saved));
-    }
-  }, []);
+useEffect(() => {
+  const saved = localStorage.getItem("farmClusters");
+  if (saved) {
+    setFarms(JSON.parse(saved));
+    setHasLoadedInitialFarms(true);
+  }
+}, []);
+
+useEffect(() => {
+  const updateFarmStats = async () => {
+    const updatedFarms = await Promise.all(
+      farms.map(async (farm) => {
+        const energyConsumption = await fetchEnergyConsumption(farm.tiles);
+        const waterUsage = await fetchWaterUsage(farm.tiles);
+        return {
+          ...farm,
+          farmStats: {
+            cropsYield: 5, // Placeholder
+            waterUsage: Number(waterUsage.toFixed(0)),
+            energyConsumption: Number(energyConsumption.toFixed(0)),
+          },
+        };
+      })
+    );
+    localStorage.setItem("farmClusters", JSON.stringify(updatedFarms));
+    setFarms(updatedFarms);
+  };
+
+  if (hasLoadedInitialFarms && farms.length > 0) {
+    updateFarmStats();
+  }
+}, [hasLoadedInitialFarms]);
+
 
   return (
     <SidebarProvider>
@@ -45,12 +80,11 @@ export default function Farms() {
 
           {farms.map((farm, idx) => {
             const farmName = farm.name ?? `Farm #${idx + 1}`;
-            const stats = {
-              cropsYield: 5,
-              waterUsage: 7000,
-              energyConsumption: 250,
+            const stats = farm.farmStats || {
+              cropsYield: 0,
+              waterUsage: 0,
+              energyConsumption: 0,
             };
-
             return (
               <Card key={idx} className="shadow-md hover:shadow-lg transition-shadow duration-300">
                 <CardHeader>
