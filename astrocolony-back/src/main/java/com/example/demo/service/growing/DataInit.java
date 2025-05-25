@@ -16,7 +16,9 @@ public class DataInit {
     CommandLineRunner initDatabase(PlantRepository repository) {
         return args -> {
             if (repository.count() == 0) {
-                repository.saveAll(List.of());
+                repository.saveAll(List.of(
+
+                ));
             }
         };
     }

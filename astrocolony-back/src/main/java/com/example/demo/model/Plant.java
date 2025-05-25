@@ -26,6 +26,15 @@ public class Plant {
     private LocalDateTime plantedAt;
     private LocalDateTime lastUpdated;
 
+    public Plant(Long id, String species, LocalDateTime plantedAt) {
+        this.id = id;
+        this.species = species;
+        this.plantedAt = plantedAt;
+    }
+
+    public Plant() {
+    }
+
     @PrePersist
     protected void onCreate() {
         plantedAt = LocalDateTime.now();

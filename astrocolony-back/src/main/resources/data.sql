@@ -1,0 +1,1 @@
+INSERT into Plants (id,species) values (1,"Ziemniak");
