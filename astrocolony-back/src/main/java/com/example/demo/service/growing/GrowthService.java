@@ -66,4 +66,38 @@ public class GrowthService {
     private double calculateHealthImpact(double growthFactor) {
         return growthFactor > 0.5 ? 0.005 : -0.01;
     }
+
+    public List<Plant> getAllPlants() {
+        return plantRepository.findAll();
+    }
+
+    public Plant getPlantById(Long id) {
+        return plantRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Plant not found with id: " + id));
+    }
+
+    public String getPlantsHealthStatus() {
+        List<Plant> plants = plantRepository.findAll();
+        long healthyCount = plants.stream().filter(p -> p.getHealth() > 0.7).count();
+        double avgGrowth = plants.stream().mapToDouble(Plant::getGrowthStage).average().orElse(0.0);
+
+        return String.format("""
+            Greenhouse Status Report:
+            - Total plants: %d
+            - Healthy plants: %d
+            - Average growth stage: %.2f%%
+            - Current environment factors:
+              Temperature: %.1f°C
+              Light: %.1f lux
+              Nutrients: %.1f%%
+            """,
+                plants.size(),
+                healthyCount,
+                avgGrowth * 100,
+                environment.getTemperature(),
+                environment.getLightIntensity(),
+                environment.getNutrientLevel() * 100
+        );
+    }
+
 }
