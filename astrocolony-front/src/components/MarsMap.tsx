@@ -305,15 +305,33 @@ export default function MarsMap() {
       name: farmName,
     };
 
-    setClusters((prev) => [...prev, newCluster]);
-    setPendingClusters([]);
-    localStorage.setItem(
-      "farmClusters",
-      JSON.stringify([...clusters, newCluster])
-    );
-    initialRef.current = JSON.stringify([...clusters, newCluster]);
-    setChanges(false);
-    setIsDialogOpen(false);
+    fetch("http://localhost:8080/api/plants/createPlant", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        species: newCluster.type
+      }),
+    })
+      .then((response) => {
+        if (response.ok) {
+          setClusters((prev) => [...prev, newCluster]);
+          setPendingClusters([]);
+          localStorage.setItem(
+            "farmClusters",
+            JSON.stringify([...clusters, newCluster])
+          );
+          initialRef.current = JSON.stringify([...clusters, newCluster]);
+          setChanges(false);
+          setIsDialogOpen(false);
+        } else {
+          alert("Failed to save the farm to the server.");
+        }
+      })
+      .catch(() => {
+        alert("Network error while saving the farm.");
+      });
   };
 
   const handleClusterAdd = (cluster: Tile[]) => {

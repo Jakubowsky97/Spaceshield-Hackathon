@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { IconPlayerPauseFilled, IconPlayerPlayFilled, IconPlayerTrackNextFilled } from "@tabler/icons-react";
+import { IconPlayerPauseFilled, IconPlayerPlay, IconPlayerPlayFilled, IconPlayerTrackNext, IconPlayerTrackNextFilled } from "@tabler/icons-react";
 import { Button } from "./ui/button";
 import { RefreshCw } from "lucide-react";
 
@@ -26,8 +26,8 @@ export function SiteHeader({ title, lastUpdated, loading, fetchEnvData }: { titl
               className="mx-2 data-[orientation=vertical]:h-4"  
             />
             <IconPlayerPauseFilled />
-            <IconPlayerPlayFilled />
-            <IconPlayerTrackNextFilled />
+            <IconPlayerPlay />
+            <IconPlayerTrackNext />
           </div>
         )}
         {title === "Resources" && (

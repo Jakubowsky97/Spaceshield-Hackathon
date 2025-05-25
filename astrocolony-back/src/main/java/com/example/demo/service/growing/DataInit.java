@@ -16,16 +16,12 @@ public class DataInit {
     CommandLineRunner initDatabase(PlantRepository repository) {
         return args -> {
             if (repository.count() == 0) {
-                repository.saveAll(List.of(
-                        createPlant("Mars Potato", 0.2),
-                        createPlant("Red Martian Tomato", 0.4),
-                        createPlant("Space Wheat", 0.3)
-                ));
+                repository.saveAll(List.of());
             }
         };
     }
 
-    private Plant createPlant(String species, double progress) {
+    public Plant createPlant(String species, double progress) {
         Plant plant = new Plant();
         plant.setSpecies(species);
         plant.setGrowthProgress(progress);

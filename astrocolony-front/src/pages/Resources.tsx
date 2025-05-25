@@ -87,7 +87,9 @@ export default function Resources() {
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [farms, setFarms] = useState<Farm[]>([]);
-  
+  const [sandStorm, setSandStorm] = useState(true
+  );
+  const [sandStormWarning, setSandStromWarning] = useState(false);
 
   // Hook używany poprawnie wewnątrz komponentu
   const { savedTiles } = useTileCounter({
@@ -102,21 +104,15 @@ export default function Resources() {
     }
   }, []);
 
-  const dailyPowerConsumption = farms.reduce(
-    (total, farm) => {
-      const energyConsumption = farm.farmStats?.energyConsumption || 0;
-      return total + energyConsumption;
-    },
-    0
-  );
+  const dailyPowerConsumption = farms.reduce((total, farm) => {
+    const energyConsumption = farm.farmStats?.energyConsumption || 0;
+    return total + energyConsumption;
+  }, 0);
 
-  const dailyWaterUsage = farms.reduce(
-    (total, farm) => {
-      const waterUsage = farm.farmStats?.waterUsage || 0;
-      return total + waterUsage;
-    },
-    0
-  );
+  const dailyWaterUsage = farms.reduce((total, farm) => {
+    const waterUsage = farm.farmStats?.waterUsage || 0;
+    return total + waterUsage;
+  }, 0);
 
   // Metryki zdefiniowane wewnątrz komponentu, żeby mieć dostęp do savedTiles
   const metrics: MetricConfig[] = useMemo(
@@ -140,8 +136,8 @@ export default function Resources() {
         color: "text-orange-600",
         bgColor: "bg-gradient-to-br from-orange-50 to-red-50",
         iconColor: "text-orange-500",
-        optimal: { min: 100 * tilesCount, max: 200 * tilesCount },
-        max: 300 * tilesCount,
+        optimal: { min: 100 * tilesCount * (sandStorm ? 0.2 : 1), max: 200 * tilesCount * (sandStorm ? 0.2 : 1) },
+        max: 300 * tilesCount * (sandStorm ? 0.2 : 1),
       },
       {
         key: "o2Level",
@@ -218,6 +214,30 @@ export default function Resources() {
             </Alert>
           )}
 
+          {sandStorm == true && (
+            <Alert className="mb-6 border-red-200 bg-red-50">
+              <AlertTriangle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-800">
+                <strong>Weather Alert:</strong>
+                <span className="font-medium">
+                  A sand storm is currently active. Outdoor operations are unsafe and solar energy production may be reduced. 
+                </span>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {sandStormWarning == true && (
+            <Alert className="mb-6 border-orange-200 bg-orange-50">
+              <AlertTriangle className="h-4 w-4 text-orange-600" />
+              <AlertDescription className="text-orange-800">
+                <strong>Weather Alert:</strong>
+                <span className="font-medium">
+                  A sand storm may be approaching. Prepare for reduced solar energy and limit outdoor activities.
+                </span>
+              </AlertDescription>
+            </Alert>
+          )}
+
           {loading && (
             <div className="flex items-center justify-center py-16">
               <div className="text-center">
@@ -241,7 +261,7 @@ export default function Resources() {
           {envData && (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {metrics.map((metric) => {
-                const value = envData[metric.key];
+                const value = envData[metric.key] * (sandStorm && metric.key == "energyLevel" ? 0.2 : 1);
                 const Icon = metric.icon;
                 const TrendIcon = getTrendIcon(value, metric.optimal);
                 const progressValue = (value / metric.max) * 100;
@@ -283,7 +303,19 @@ export default function Resources() {
                             <p className="text-sm text-gray-600 font-medium">
                               {metric.unit}
                             </p>
+                            {metric.key === "waterLevel" && (
+                              <p className="text-xs text-blue-700 mt-1">
+                                Daily usage: {dailyWaterUsage.toFixed(1)} L
+                              </p>
+                            )}
+                            {metric.key === "energyLevel" && (
+                              <p className="text-xs text-orange-700 mt-1">
+                                Daily usage: {(dailyPowerConsumption * (sandStorm ? 0.2 : 1)).toFixed(1)}{" "}
+                                kWh
+                              </p>
+                            )}
                           </div>
+
                           <div className="flex items-center gap-1 text-gray-500">
                             <TrendIcon className="h-4 w-4" />
                           </div>

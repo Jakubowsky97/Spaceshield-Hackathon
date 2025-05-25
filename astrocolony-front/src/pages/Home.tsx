@@ -118,7 +118,7 @@ export default function Home() {
                           Performance Metrics
                         </h3>
                         <p className="text-slate-500 dark:text-slate-400 text-sm">
-                          Hourly system analytics
+                          Sol system analytics
                         </p>
                       </div>
                     </div>
@@ -143,7 +143,18 @@ export default function Home() {
                         </p>
                       </div>
                     </div>
-                    <DataTable data={data} />
+                    <DataTable
+                      data={
+                        data.map((item) => ({
+                          ...item,
+                          status: (
+                            ["In progress", "Planned", "Ended", "Delayed"].includes(item.status)
+                              ? item.status
+                              : "Planned"
+                          ) as "In progress" | "Planned" | "Ended" | "Delayed",
+                        }))
+                      }
+                    />
                   </div>
                 </div>
               </div>

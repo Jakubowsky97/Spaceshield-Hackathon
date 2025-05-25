@@ -1,6 +1,8 @@
 package com.example.demo.controller.growthController;
 
 import com.example.demo.model.Plant;
+import com.example.demo.repository.PlantRepository;
+import com.example.demo.service.growing.DataInit;
 import com.example.demo.service.growing.GrowthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +14,11 @@ import java.util.Map;
 @RequestMapping("/api/plants")
 public class GrowthController {
     private final GrowthService growthService;
+    private final DataInit dataInit;
 
-    public GrowthController(GrowthService growthService) {
+    public GrowthController(GrowthService growthService, DataInit dataInit) {
         this.growthService = growthService;
+        this.dataInit = dataInit;
     }
 
     @GetMapping
@@ -76,5 +80,11 @@ public class GrowthController {
     @GetMapping("/simulation/getInterval")
     public long getInterval() {
       return  growthService.getCurrentInterval();
+    }
+
+    @PostMapping("/createPlant")
+    public ResponseEntity<String> createPlant(@RequestBody String species) {
+        dataInit.createPlant(species, 0.0);
+        return ResponseEntity.ok("Farma stworzona");
     }
 }
