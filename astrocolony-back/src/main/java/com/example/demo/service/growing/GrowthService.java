@@ -1,17 +1,18 @@
-package com.example.demo.service;
+package com.example.demo.service.growing;
 
 import com.example.demo.model.GreenhouseEnviroment;
 import com.example.demo.model.Plant;
 import com.example.demo.model.Plant.GrowthStage;
 import com.example.demo.repository.PlantRepository;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.time.LocalDateTime;
+
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Service
 public class GrowthService {
@@ -27,8 +28,11 @@ public class GrowthService {
         this.plantRepository = plantRepository;
         this.environmentService = environmentService;
     }
+    @Setter
+    @Getter
+    private long currentInterval = 60000;
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRateString  = "#{growthService.getCurrentInterval()}")
     @Transactional
     public void simulateGrowthCycle() {
         if (!simulationActive) return;
@@ -64,6 +68,15 @@ public class GrowthService {
         } else {
             plant.setGrowthStage(GrowthStage.MATURE);
         }
+    }
+    @Transactional(readOnly = true)
+    public Plant getPlantById(Long id) {
+            return plantRepository.findById(id).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Plant> getAllPlants() {
+        return plantRepository.findAll();
     }
 
     private void updatePlantHealth(Plant plant) {
@@ -154,4 +167,6 @@ public class GrowthService {
     public boolean isSimulationRunning() {
         return simulationActive;
     }
+
+
 }

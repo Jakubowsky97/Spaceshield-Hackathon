@@ -1,6 +1,6 @@
 package com.example.demo.controller.dev;
 
-import com.example.demo.service.GrowthService;
+import com.example.demo.service.growing.GrowthService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

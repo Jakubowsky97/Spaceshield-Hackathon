@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Plant;
-import com.example.demo.service.GrowthService;
+import com.example.demo.service.growing.GrowthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,8 +12,6 @@ import java.util.Map;
 @RequestMapping("/api/plants")
 public class GrowthController {
     private final GrowthService growthService;
-
-
 
     public GrowthController(GrowthService growthService) {
         this.growthService = growthService;
@@ -67,5 +65,16 @@ public class GrowthController {
         return ResponseEntity.ok(Map.of(
                 "active", growthService.isSimulationActive()
         ));
+    }
+
+    @GetMapping("/simulation/setInterval")
+    public void changeInterval() {
+        growthService.setCurrentInterval(30000);
+    }
+
+
+    @GetMapping("/simulation/getInterval")
+    public long getInterval() {
+      return  growthService.getCurrentInterval();
     }
 }
