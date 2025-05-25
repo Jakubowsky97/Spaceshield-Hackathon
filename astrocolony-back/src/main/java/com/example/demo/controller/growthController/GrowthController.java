@@ -1,22 +1,36 @@
 package com.example.demo.controller.growthController;
 
+import com.example.demo.model.Plant;
 import com.example.demo.service.growing.GrowthService;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/growth")
+@RequestMapping("/api/plants")
 public class GrowthController {
 
-    private final GrowthService growPlants;
+    private final GrowthService plantService;
 
-    public GrowthController(GrowthService growPlants) {
-        this.growPlants = growPlants;
+    @Autowired
+    public GrowthController(GrowthService plantService) {
+        this.plantService = plantService;
     }
 
-    @RequestMapping("/simulateGrowth")
-    public String simulateGrowth() {
-        growPlants.growPlants(); // Zaktualizuje wszystkie rośliny w bazie
-        return "Growth simulation complete.";
+    @GetMapping("/getAll")
+    public List<Plant> getAllPlants() {
+        return plantService.getAllPlants();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Plant> getPlantById(@PathVariable Long id) {
+        return ResponseEntity.ok(plantService.getPlantById(id));
+    }
+
+    @GetMapping("/health-status")
+    public String getHealthStatus() {
+        return plantService.getPlantsHealthStatus();
     }
 }
