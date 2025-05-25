@@ -45,6 +45,14 @@ public class GrowthService {
         plantRepository.saveAll(plants);
     }
 
+    public void setCurrentInterval(int speed){
+        currentInterval = speed;
+    }
+
+    public int getCurrentInterval(){
+        return (int) currentInterval;
+    }
+
     private void updateGrowthProgress(Plant plant) {
         if (plant.getGrowthStage() == GrowthStage.HARVESTED) return;
 

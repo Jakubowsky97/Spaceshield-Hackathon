@@ -1,4 +1,4 @@
-package com.example.demo.controller;
+package com.example.demo.controller.growthController;
 
 import com.example.demo.model.Plant;
 import com.example.demo.service.growing.GrowthService;
@@ -63,13 +63,13 @@ public class GrowthController {
     @GetMapping("/simulation/status")
     public ResponseEntity<Map<String, Boolean>> getSimulationStatus() {
         return ResponseEntity.ok(Map.of(
-                "active", growthService.isSimulationActive()
+                "active", growthService.isSimulationRunning()
         ));
     }
 
     @GetMapping("/simulation/setInterval")
-    public void changeInterval() {
-        growthService.setCurrentInterval(30000);
+    public void changeInterval(@RequestParam int speed) {
+        growthService.setCurrentInterval(speed);
     }
 
 
