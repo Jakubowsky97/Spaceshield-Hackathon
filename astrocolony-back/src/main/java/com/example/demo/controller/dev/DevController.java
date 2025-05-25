@@ -1,24 +1,31 @@
 package com.example.demo.controller.dev;
 
-import com.example.demo.service.growing.GrowthService;
+import com.example.demo.service.GrowthService;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/dev")
+@RequestMapping("/api/simulation")
 public class DevController {
 
     @Autowired
     private GrowthService growthService;
 
-    @PostMapping("/simulate-growth")
-    public String simulateGrowth(@RequestParam int minutes) {
-        for (int i = 0; i < minutes; i++) {
-            growthService.growPlants();
-        }
-        return "Symulacja wykonana dla " + minutes + " minut";
+    @PostMapping("/stop")
+    public String stop() {
+        growthService.stopSimulation();
+        return "Symulacja zatrzymana";
+    }
+
+    @PostMapping("/start")
+    public String start() {
+        growthService.startSimulation();
+        return "Symulacja wznowiona";
+    }
+
+    @GetMapping("/status")
+    public boolean status() {
+        return growthService.isSimulationRunning();
     }
 }

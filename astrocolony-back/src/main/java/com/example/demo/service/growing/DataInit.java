@@ -1,12 +1,10 @@
-
-package com.example.demo.service.growing;
+package com.example.demo.config;
 
 import com.example.demo.model.Plant;
 import com.example.demo.repository.PlantRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,23 +12,24 @@ import java.util.List;
 public class DataInit {
 
     @Bean
-    public CommandLineRunner initData(PlantRepository plantRepository) {
+    CommandLineRunner initDatabase(PlantRepository repository) {
         return args -> {
-            if (plantRepository.count() == 0) {
-                Plant plant1 = new Plant();
-                plant1.setSpecies("Mars Potato");
-                plant1.setGrowthStage(0.4);
-                plant1.setHealth(0.9);
-                plant1.setPlantedAt(LocalDateTime.now());
-
-                Plant plant2 = new Plant();
-                plant2.setSpecies("Red Martian Tomato");
-                plant2.setGrowthStage(0.7);
-                plant2.setHealth(0.6);
-                plant2.setPlantedAt(LocalDateTime.now().minusDays(3));
-
-                plantRepository.saveAll(List.of(plant1, plant2));
+            if (repository.count() == 0) {
+                repository.saveAll(List.of(
+                        createPlant("Mars Potato", 0.2),
+                        createPlant("Red Martian Tomato", 0.4),
+                        createPlant("Space Wheat", 0.3)
+                ));
             }
         };
+    }
+
+    private Plant createPlant(String species, double progress) {
+        Plant plant = new Plant();
+        plant.setSpecies(species);
+        plant.setGrowthProgress(progress);
+        plant.setHealth(0.9);
+        plant.setGrowthStage(Plant.GrowthStage.SEEDLING);
+        return plant;
     }
 }

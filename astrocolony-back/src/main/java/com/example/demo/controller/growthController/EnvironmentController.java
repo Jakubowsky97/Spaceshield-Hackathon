@@ -1,37 +1,41 @@
 package com.example.demo.controller.growthController;
 
-import com.example.demo.model.EnviromentAdjustmentDTO;
-import com.example.demo.model.GreenhouseEnvironment;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.model.GreenhouseEnviroment;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/environment")
 public class EnvironmentController {
-    @Autowired
-    private GreenhouseEnvironment environment;
+    private final GreenhouseEnviroment environmentService;
+
+    public EnvironmentController(GreenhouseEnviroment environmentService) {
+        this.environmentService = environmentService;
+    }
 
     @GetMapping
     public ResponseEntity<Map<String, Double>> getEnvironment() {
         return ResponseEntity.ok(Map.of(
-                "temperature", environment.getTemperature(),
-                "co2Level", environment.getCo2Level(),
-                "humidity", environment.getHumidity(),
-                "lightIntensity", environment.getLightIntensity(),
-                "nutrientLevel", environment.getNutrientLevel(),
-                "radiationLevel", environment.getRadiationLevel()
+                "temperature", environmentService.getTemperature(),
+                "co2Level", environmentService.getCo2Level(),
+                "humidity", environmentService.getHumidity(),
+                "lightIntensity", environmentService.getLightIntensity(),
+                "nutrientLevel", environmentService.getNutrientLevel(),
+                "radiationLevel", environmentService.getRadiationLevel()
         ));
     }
 
-    @PostMapping("/adjust")
-    public ResponseEntity<String> adjustEnvironment(@RequestBody EnviromentAdjustmentDTO adjustment) {
-        environment.setTemperature(adjustment.getTemperature());
-        environment.setCo2Level(adjustment.getCo2Level());
-        environment.setLightIntensity(adjustment.getLightIntensity());
-        environment.setNutrientLevel(adjustment.getNutrientLevel());
-        return ResponseEntity.ok("Environment adjusted");
+    @GetMapping("/factors")
+    public ResponseEntity<Map<String, Double>> getEnvironmentFactors() {
+        return ResponseEntity.ok(Map.of(
+                "temperatureFactor", environmentService.getTemperatureFactor(),
+                "lightFactor", environmentService.getLightFactor(),
+                "nutrientFactor", environmentService.getNutrientFactor(),
+                "radiationFactor", environmentService.getRadiationFactor()
+        ));
     }
 }

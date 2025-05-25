@@ -11,4 +11,6 @@ import java.util.List;
 public interface PlantRepository extends JpaRepository<Plant, Long> {
     @Override
     List<Plant> findAll();
+
+    long countByGrowthStage(Plant.GrowthStage stage);
 }
