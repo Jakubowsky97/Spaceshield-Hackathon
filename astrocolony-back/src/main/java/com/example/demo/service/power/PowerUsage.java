@@ -20,7 +20,7 @@ public class PowerUsage{
     static double extTemp;
     public static double externalTempC = extTemp;
 
-    public double getTemp() {
+    public double getPowerUsage() {
         WeatherResponse weatherResponse = weatherApiClient.getLatestWeather().block();
         assert weatherResponse != null;
         extTemp  = weatherResponse.getAvgTemperature();
