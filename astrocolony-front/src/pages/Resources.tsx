@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -19,6 +19,7 @@ import { useTileCounter } from "@/hooks/useTileCounter";
 
 type EnvironmentData = {
   energyLevel: number; // Opcjonalne, jeśli nie zawsze dostępne
+  maxo2Level: number; // Opcjonalne, jeśli nie zawsze dostępne
   o2Level: number;
   waterLevel: number; // Dodane do typu
 };
@@ -33,6 +34,21 @@ type MetricConfig = {
   iconColor: string;
   optimal: { min: number; max: number };
   max: number;
+};
+
+type Tile = [number, number];
+
+type Farm = {
+  tiles: Tile[];
+  type: string;
+  name?: string;
+  farmStats?: FarmStats;
+};
+
+type FarmStats = {
+  cropsYield: number;
+  waterUsage: number;
+  energyConsumption: number;
 };
 
 function getStatusColor(value: number, optimal: { min: number; max: number }) {
@@ -70,6 +86,8 @@ export default function Resources() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [farms, setFarms] = useState<Farm[]>([]);
+  
 
   // Hook używany poprawnie wewnątrz komponentu
   const { savedTiles } = useTileCounter({
@@ -77,70 +95,93 @@ export default function Resources() {
   });
   const tilesCount = savedTiles > 0 ? savedTiles : 1;
 
+  useEffect(() => {
+    const saved = localStorage.getItem("farmClusters");
+    if (saved) {
+      setFarms(JSON.parse(saved));
+    }
+  }, []);
+
+  const dailyPowerConsumption = farms.reduce(
+    (total, farm) => {
+      const energyConsumption = farm.farmStats?.energyConsumption || 0;
+      return total + energyConsumption;
+    },
+    0
+  );
+
+  const dailyWaterUsage = farms.reduce(
+    (total, farm) => {
+      const waterUsage = farm.farmStats?.waterUsage || 0;
+      return total + waterUsage;
+    },
+    0
+  );
+
   // Metryki zdefiniowane wewnątrz komponentu, żeby mieć dostęp do savedTiles
-  const metrics: MetricConfig[] = [
-    {
-      key: "waterLevel",
-      title: "Water Level",
-      icon: Droplets,
-      unit: "L",
-      color: "text-blue-600",
-      bgColor: "bg-gradient-to-br from-blue-50 to-cyan-50",
-      iconColor: "text-blue-500",
-      optimal: { min: 50 * (tilesCount * 10), max: 100 * (tilesCount * 10) },
-      max: 150 * (tilesCount * 10),
-    },
-    {
-      key: "energyLevel",
-      title: "Energy Level",
-      icon: Plug,
-      unit: "kWh",
-      color: "text-orange-600",
-      bgColor: "bg-gradient-to-br from-orange-50 to-red-50",
-      iconColor: "text-orange-500",
-      optimal: { min: 60, max: 80 },
-      max: 100,
-    },
-    {
-      key: "o2Level",
-      title: "O₂ Level",
-      icon: Activity,
-      unit: "ppm",
-      color: "text-green-600",
-      bgColor: "bg-gradient-to-br from-green-50 to-emerald-50",
-      iconColor: "text-green-500",
-      optimal: { min: 800, max: 1200 },
-      max: 2000,
-    },
-  ];
+  const metrics: MetricConfig[] = useMemo(
+    () => [
+      {
+        key: "waterLevel",
+        title: "Water Level",
+        icon: Droplets,
+        unit: "L",
+        color: "text-blue-600",
+        bgColor: "bg-gradient-to-br from-blue-50 to-cyan-50",
+        iconColor: "text-blue-500",
+        optimal: { min: 50 * tilesCount * 10, max: 100 * tilesCount * 10 },
+        max: 150 * tilesCount * 10,
+      },
+      {
+        key: "energyLevel",
+        title: "Energy Level",
+        icon: Plug,
+        unit: "kWh",
+        color: "text-orange-600",
+        bgColor: "bg-gradient-to-br from-orange-50 to-red-50",
+        iconColor: "text-orange-500",
+        optimal: { min: 100 * tilesCount, max: 200 * tilesCount },
+        max: 300 * tilesCount,
+      },
+      {
+        key: "o2Level",
+        title: "O₂ Level",
+        icon: Activity,
+        unit: "ppm",
+        color: "text-green-600",
+        bgColor: "bg-gradient-to-br from-green-50 to-emerald-50",
+        iconColor: "text-green-500",
+        optimal: { min: 300, max: 500 },
+        max: 600,
+      },
+    ],
+    [tilesCount]
+  );
 
   const fetchEnvData = async () => {
     setLoading(true);
     setError(null);
     try {
       const simulatedData: EnvironmentData = {
-        o2Level: 1000 + (Math.random() - 0.5) * 200,
-        energyLevel: 70 + (Math.random() - 0.5) * 20,
-        waterLevel: 50 + (Math.random() - 0.5) * 30,
+        o2Level: metrics[2].optimal.max * 0.95,
+        maxo2Level: metrics[2].max,
+        energyLevel: metrics[1].optimal.max * 0.9,
+        waterLevel: metrics[0].optimal.max * 0.85,
       };
 
       await new Promise((resolve) => setTimeout(resolve, 800));
       setEnvData(simulatedData);
+      localStorage.setItem("envData", JSON.stringify(simulatedData));
       setLastUpdated(new Date());
+      setLoading(false);
     } catch (e: any) {
       setError(e.message || "Unknown error");
-    } finally {
-      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchEnvData();
-
-    // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchEnvData, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  }, [tilesCount]);
 
   const criticalAlerts = envData
     ? metrics.filter((metric) => {
