@@ -15,12 +15,12 @@ public class PowerOutputController {
     }
 
     @GetMapping("/SolarOutput")
-    public Mono<Double> getOutput(@RequestParam double meters) {
+    public double getOutput(@RequestParam double meters) {
         return service.calculateSolarPanelOutput(meters);
     }
 
     @GetMapping("/SolarEfficiency")
-    public Mono<Double> getEfficiency(@RequestParam double meters) {
+    public double getEfficiency(@RequestParam double meters) {
         return service.calculateSolarPanelEfficiency(meters);
     }
 }

@@ -1,6 +1,10 @@
 package com.example.demo.service.weather;
 
 import com.example.demo.client.WeatherApiClient;
+import com.example.demo.model.WeatherResponse;
+import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 public class DustStormWarning {
 
@@ -9,17 +13,20 @@ public class DustStormWarning {
     public DustStormWarning(WeatherApiClient weatherApiClient) {
         this.weatherApiClient = weatherApiClient;
     }
-
     public boolean isDustStormIminent() {
-    }
-     if((topSpeed -minSpeed)>15)
+        boolean isdustStorm = false;
+        List<WeatherResponse> weatherResponse = weatherApiClient.getAllSolsWeather().block();
+        for (WeatherResponse weatherResponse1:weatherResponse){
+            double avg = weatherResponse1.getAvgWindSpeed();
+            double max = weatherResponse1.getMaxWindSpeed();
+            if ((max-avg)>15){
+                isdustStorm = true;
+            }
 
-    {
-        return standardSunRadiation * solarPanelsInMeters * 0.2;
-    } else
-
-    {
-        return standardSunRadiation * standardSunRadiation * 0.8 * 0.90;
+        }
+        return isdustStorm;
     }
-}
-}
+
+
+    }
+

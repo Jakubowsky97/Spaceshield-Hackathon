@@ -63,7 +63,7 @@ public class GrowthController {
     @GetMapping("/simulation/status")
     public ResponseEntity<Map<String, Boolean>> getSimulationStatus() {
         return ResponseEntity.ok(Map.of(
-                "active", growthService.isSimulationActive()
+                "active", growthService.isSimulationRunning()
         ));
     }
 

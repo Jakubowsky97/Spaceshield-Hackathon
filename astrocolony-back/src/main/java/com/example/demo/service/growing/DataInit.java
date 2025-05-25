@@ -1,11 +1,12 @@
-package com.example.demo.config;
+package com.example.demo.service.growing;
+
 
 import com.example.demo.model.Plant;
 import com.example.demo.repository.PlantRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import java.time.LocalDateTime;
+
 import java.util.List;
 
 @Configuration
