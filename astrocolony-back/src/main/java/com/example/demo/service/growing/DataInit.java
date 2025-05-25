@@ -17,9 +17,7 @@ public class DataInit {
         return args -> {
             if (repository.count() == 0) {
                 repository.saveAll(List.of(
-                        createPlant("Mars Potato", 0.2),
-                        createPlant("Red Martian Tomato", 0.4),
-                        createPlant("Space Wheat", 0.3)
+
                 ));
             }
         };
