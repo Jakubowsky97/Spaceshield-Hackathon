@@ -10,10 +10,10 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/environment")
-public class EnvironmentController {
+public class GreenhouseEnvironment {
     private final GreenhouseEnviroment environmentService;
 
-    public EnvironmentController(GreenhouseEnviroment environmentService) {
+    public GreenhouseEnvironment(GreenhouseEnviroment environmentService) {
         this.environmentService = environmentService;
     }
 
