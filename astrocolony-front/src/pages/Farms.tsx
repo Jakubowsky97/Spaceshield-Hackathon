@@ -32,6 +32,25 @@ const fetchWaterUsage = async (tiles: Tile[]): Promise<number> => {
   return data;
 }
 
+//const fetchCropsYield = async ()
+
+// const calculateCropsYield = (farm: Farm, waterUsage: number, energyConsumption: number): number => {
+//   const baseYieldPerTile = 0.8; // np. 0.8 ton plonu na 1 kafelek (10 m2)
+  
+//   // Współczynnik efektywności wody (zakładamy, że potrzeba np. 75 l na kafelek)
+//   const waterNeeded = farm.tiles.length * 75;
+//   const waterEfficiency = Math.min(1, waterUsage / waterNeeded);
+
+//   // Współczynnik efektywności energii (zakładamy np. 3.8 kWh na kafelek)
+//   const energyNeeded = farm.tiles.length * 3.8;
+//   const energyEfficiency = Math.min(1, energyConsumption / energyNeeded);
+
+//   const yieldTons = baseYieldPerTile * farm.tiles.length * waterEfficiency * energyEfficiency;
+
+//   return Number(yieldTons.toFixed(2));
+// }
+
+
 export default function Farms() {
   const [farms, setFarms] = useState<Farm[]>([]);
 const [hasLoadedInitialFarms, setHasLoadedInitialFarms] = useState(false);
@@ -50,10 +69,11 @@ useEffect(() => {
       farms.map(async (farm) => {
         const energyConsumption = await fetchEnergyConsumption(farm.tiles);
         const waterUsage = await fetchWaterUsage(farm.tiles);
+        const cropYield = 
         return {
           ...farm,
           farmStats: {
-            cropsYield: 5, // Placeholder
+            cropsYield: cropYield,
             waterUsage: Number(waterUsage.toFixed(0)),
             energyConsumption: Number(energyConsumption.toFixed(0)),
           },
