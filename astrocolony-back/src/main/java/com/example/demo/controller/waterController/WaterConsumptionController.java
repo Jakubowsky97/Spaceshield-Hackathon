@@ -13,7 +13,12 @@ public class WaterConsumptionController {
         this.waterConsumptionService = waterConsumptionService;
     }
 
+
     WaterConsumptionService waterConsumptionService;
+
+    public WaterConsumptionController(WaterConsumptionService waterConsumptionService) {
+        this.waterConsumptionService = waterConsumptionService;
+    }
 
     @RequestMapping("/consumption")
     public double calcWaterConsumption(@RequestParam int m2){

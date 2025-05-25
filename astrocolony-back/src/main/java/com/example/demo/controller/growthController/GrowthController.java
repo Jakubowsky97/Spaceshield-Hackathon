@@ -1,36 +1,71 @@
-package com.example.demo.controller.growthController;
+package com.example.demo.controller;
 
 import com.example.demo.model.Plant;
-import com.example.demo.service.growing.GrowthService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.demo.service.GrowthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/plants")
 public class GrowthController {
+    private final GrowthService growthService;
 
-    private final GrowthService plantService;
 
-    @Autowired
-    public GrowthController(GrowthService plantService) {
-        this.plantService = plantService;
+
+    public GrowthController(GrowthService growthService) {
+        this.growthService = growthService;
     }
 
-    @GetMapping("/getAll")
-    public List<Plant> getAllPlants() {
-        return plantService.getAllPlants();
+    @GetMapping
+    public ResponseEntity<List<Plant>> getAllPlants() {
+        return ResponseEntity.ok(growthService.getAllPlants());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Plant> getPlantById(@PathVariable Long id) {
-        return ResponseEntity.ok(plantService.getPlantById(id));
+        return ResponseEntity.ok(growthService.getPlantById(id));
     }
 
-    @GetMapping("/health-status")
-    public String getHealthStatus() {
-        return plantService.getPlantsHealthStatus();
+    @PostMapping("/{id}/harvest")
+    public ResponseEntity<?> harvestPlant(@PathVariable Long id) {
+        try {
+            double yield = growthService.harvestPlant(id);
+            return ResponseEntity.ok(Map.of(
+                    "yield", yield,
+                    "message", "Pomyślnie zebrano plony"
+            ));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "error", "Nie można zebrać plonów",
+                    "message", e.getMessage()
+            ));
+        }
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Object>> getStatistics() {
+        return ResponseEntity.ok(growthService.getYieldStatistics());
+    }
+
+    @PostMapping("/simulation/start")
+    public ResponseEntity<String> startSimulation() {
+        growthService.startSimulation();
+        return ResponseEntity.ok("Symulacja rozpoczęta");
+    }
+
+    @PostMapping("/simulation/stop")
+    public ResponseEntity<String> stopSimulation() {
+        growthService.stopSimulation();
+        return ResponseEntity.ok("Symulacja zatrzymana");
+    }
+
+    @GetMapping("/simulation/status")
+    public ResponseEntity<Map<String, Boolean>> getSimulationStatus() {
+        return ResponseEntity.ok(Map.of(
+                "active", growthService.isSimulationActive()
+        ));
     }
 }
