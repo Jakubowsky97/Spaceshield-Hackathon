@@ -45,7 +45,8 @@ export default function Farms() {
 
           {farms.map((farm, idx) => {
             const farmName = farm.name ?? `Farm #${idx + 1}`;
-            const stats = {
+            const stats = 
+            {
               cropsYield: 5,
               waterUsage: 7000,
               energyConsumption: 250,

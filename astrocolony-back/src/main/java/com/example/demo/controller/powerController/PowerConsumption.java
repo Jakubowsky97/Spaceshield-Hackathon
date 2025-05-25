@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/power")
 public class PowerConsumption {
 
-    @RequestMapping("/calcPowerConsumption")
-    public double powerConsumption(@RequestBody double m2){
-
-    }
+//    @RequestMapping("/calcPowerConsumption")
+//    public double powerConsumption(@RequestBody double m2){
+//
+//    }
 
 
 }
